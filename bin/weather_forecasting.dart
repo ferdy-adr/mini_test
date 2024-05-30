@@ -28,17 +28,17 @@ abstract class WeatherForecasting {
         // step 3: Ambil data dari hasil parsing json
         var data = jsonMap['list'];
 
-        // Cek apakah data berupa List
+        // step 4: Cek apakah data bertype List
         if (data is List) {
-          // Ambil datetime hari ini
+          //  Ambil datetime hari ini
           DateTime today = DateTime.now();
-
           // Siapkan penampung
           List<Weather> tempWeather = [];
 
-          // Parsing dari json menjadi model Weather, kemudian masukkan ke penampung
+          // step 5: Convert json ke model Weather, kemudian masukkan ke penampung
           tempWeather = data.map((e) => Weather.fromJson(e)).toList();
 
+          // step 6: Kelompokan ramalan cuaca untuk hari ini dan 5 hari ke depan
           List<Weather> forecasting = [
             _groupByDay(tempWeather, today),
             _groupByDay(tempWeather, today.add(Duration(days: 1))),
@@ -48,8 +48,8 @@ abstract class WeatherForecasting {
             _groupByDay(tempWeather, today.add(Duration(days: 5))),
           ];
 
+          // step 6: Print hasil
           print('Weather Forecast:');
-
           forecasting.map((e) {
             print(
               '${DateFormat("E, d MMM yyyy").format(e.datetime)}: ${e.temperature.toStringAsFixed(2)}°C',
@@ -62,20 +62,25 @@ abstract class WeatherForecasting {
     }
   }
 
+  /// Logic untuk mengelompokkan daftar Weather setiap 3 jam menjadi 1 hari
   static Weather _groupByDay(List<Weather> weathers, DateTime datetime) {
+    // step 1: Tentukan batas awal hari dan akhir hari
     DateTime dayStart = DateTime(datetime.year, datetime.month, datetime.day);
     DateTime dayEnd = dayStart.add(Duration(days: 1));
 
-    // Siapkan penampung
+    // step 2: Siapkan penampung
     List<Weather> tempWeathers = [];
 
-    // Looping list weather
+    // step 3: Looping list weathers
     for (Weather value in weathers) {
+      // Cek apakah termasuk dalam rentang hari
       if (value.datetime.isAfter(dayStart) && value.datetime.isBefore(dayEnd)) {
+        // Jika benar, masukkan ke dalam penampung
         tempWeathers.add(value);
       }
     }
 
+    // step 4: Return model Weather
     return Weather(
       datetime: DateTime(datetime.year, datetime.month, datetime.day),
       temperature: _calculateAverageTemperature(tempWeathers),
