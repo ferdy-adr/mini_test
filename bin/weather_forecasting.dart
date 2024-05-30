@@ -40,19 +40,19 @@ abstract class WeatherForecasting {
           tempWeather = data.map((e) => Weather.fromJson(e)).toList();
 
           List<Weather> forecasting = [
-            groupByDay(tempWeather, today),
-            groupByDay(tempWeather, today.add(Duration(days: 1))),
-            groupByDay(tempWeather, today.add(Duration(days: 2))),
-            groupByDay(tempWeather, today.add(Duration(days: 3))),
-            groupByDay(tempWeather, today.add(Duration(days: 4))),
-            groupByDay(tempWeather, today.add(Duration(days: 5))),
+            _groupByDay(tempWeather, today),
+            _groupByDay(tempWeather, today.add(Duration(days: 1))),
+            _groupByDay(tempWeather, today.add(Duration(days: 2))),
+            _groupByDay(tempWeather, today.add(Duration(days: 3))),
+            _groupByDay(tempWeather, today.add(Duration(days: 4))),
+            _groupByDay(tempWeather, today.add(Duration(days: 5))),
           ];
 
           print('Weather Forecast:');
 
           forecasting.map((e) {
             print(
-              '${DateFormat("E, d MMM yyyy").format(e.datetime)}: ${e.temperature}°C',
+              '${DateFormat("E, d MMM yyyy").format(e.datetime)}: ${e.temperature.toStringAsFixed(2)}°C',
             );
           }).toString();
         }
@@ -62,30 +62,28 @@ abstract class WeatherForecasting {
     }
   }
 
-  static Weather groupByDay(List<Weather> weathers, DateTime datetime) {
-    DateTime todayStart = DateTime(datetime.year, datetime.month, datetime.day);
-    DateTime todayEnd = todayStart.add(Duration(days: 1));
+  static Weather _groupByDay(List<Weather> weathers, DateTime datetime) {
+    DateTime dayStart = DateTime(datetime.year, datetime.month, datetime.day);
+    DateTime dayEnd = dayStart.add(Duration(days: 1));
 
     // Siapkan penampung
     List<Weather> tempWeathers = [];
 
     // Looping list weather
     for (Weather value in weathers) {
-      // Cek hari
-      if (value.datetime.isAfter(todayStart) &&
-          value.datetime.isBefore(todayEnd)) {
+      if (value.datetime.isAfter(dayStart) && value.datetime.isBefore(dayEnd)) {
         tempWeathers.add(value);
       }
     }
 
     return Weather(
       datetime: DateTime(datetime.year, datetime.month, datetime.day),
-      temperature: calculateAverageTemperature(tempWeathers),
+      temperature: _calculateAverageTemperature(tempWeathers),
     );
   }
 
   /// Logic untuk menghitung temperature rata-rata dalam satu hari
-  static double calculateAverageTemperature(List<Weather> weathers) {
+  static double _calculateAverageTemperature(List<Weather> weathers) {
     // step 1: Ambil data temperature dari semua timestamp
     final temperatures = weathers.map((e) => e.temperature).toList();
 
