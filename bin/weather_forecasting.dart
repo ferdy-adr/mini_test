@@ -6,15 +6,15 @@ import 'package:intl/intl.dart';
 import 'model/weather.dart';
 
 abstract class WeatherForecasting {
-  static const apiKey = '3edcc3164571178f8c047768c89ab06b';
+  static const _apiKey = '3edcc3164571178f8c047768c89ab06b';
 
   /// ISO 3166 code Kota Jakarta
-  static const String cityCode = 'jakarta,ID';
+  static const String _cityCode = 'jakarta,ID';
 
   /// Ramalan cuaca 5 hari ke depan
   static Future<void> forecastFiveNextDays() async {
     final apiUrl =
-        'https://api.openweathermap.org/data/2.5/forecast?q=$cityCode&appid=$apiKey&units=metric';
+        'https://api.openweathermap.org/data/2.5/forecast?q=$_cityCode&appid=$_apiKey&units=metric';
 
     try {
       // step 1: Hit API
